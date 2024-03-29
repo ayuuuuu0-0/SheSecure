@@ -43,6 +43,10 @@ flutter:
 
   assets:
     - assets/images/splash.webp
+    - assets/images/home.png
+    - assets/images/home_fill.png
+    - assets/images/phone.png
+    - assets/images/phone_fill.png
 
   # fonts:
   #   - family: Schyler
