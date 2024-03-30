@@ -8,7 +8,7 @@ class RoundedButton extends StatelessWidget {
   RoundedButton({
     required this.text,
     required this.press,
-    this.color = Colors.black54,
+    this.color = Colors.transparent,
     this.textColor = Colors.white,
   });
 
@@ -30,7 +30,7 @@ class RoundedButton extends StatelessWidget {
         //     Colors.deepPurple.shade400,
         //   ],
         // ),
-        color: Colors.black,
+        color: Color(0xFFFF7373),
         borderRadius: BorderRadius.circular(40),
       ),
       margin: const EdgeInsets.symmetric(vertical: 1),

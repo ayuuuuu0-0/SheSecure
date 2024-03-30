@@ -7,16 +7,14 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:she_secure/Widgets/global_var.dart';
 import 'package:mapmyindia_gl/mapmyindia_gl.dart';
 
-class HomeScreen extends StatefulWidget {
-  const HomeScreen({Key? key}) : super(key: key);
+class PhoneScreen extends StatefulWidget {
+  const PhoneScreen({super.key});
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  State<PhoneScreen> createState() => _PhoneScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
-  Completer<GoogleMapController> _controller = Completer();
-
+class _PhoneScreenState extends State<PhoneScreen> {
   FirebaseAuth _auth = FirebaseAuth.instance;
 
   _buildUserImage() {
@@ -43,6 +41,16 @@ class _HomeScreenState extends State<HomeScreen> {
       setState(() {
         userImageUrl = results.data()!['userImage'];
         getUserName = results.data()!['userName'];
+        emergencyContact1 = results.data()!['emergencyContact1'];
+        emergencyContact2 = results.data()!['emergencyContact2'];
+        emergencyContact3 = results.data()!['emergencyContact3'];
+        emergencyContact4 = results.data()!['emergencyContact4'];
+        emergencyName1 = results.data()!['emergencyName1'];
+        emergencyName2 = results.data()!['emergencyName2'];
+        emergencyName3 = results.data()!['emergencyName3'];
+        emergencyName4 = results.data()!['emergencyName4'];
+
+        print(emergencyName1);
       });
     });
   }
@@ -51,16 +59,6 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-
-    // MapmyIndiaAccountManager.setMapSDKKey(ACCESS_TOKEN);
-    MapmyIndiaAccountManager.setRestAPIKey("52a026e0c0b82834480722ac29ae618a");
-    MapmyIndiaAccountManager.setAtlasClientId(
-        "96dHZVzsAutDLGyvMzPjsL4E33c6DiGXvGkkCjbuXfryx2bNiXqriKRGD-8pZiQWtwgLYI_i-s0_jHCB-43CIUB9d1MUOcow");
-    MapmyIndiaAccountManager.setAtlasClientSecret(
-        "lrFxI-iSEg-sVir2rf0wD3mwCRrpb2JxFsP60eTPJfe5XSSRJVId9Y6FV-Kg1e4yP5l2HWDjd36pOiQ-uJc2zI5krkvPt8fe-F-evuBnP-Q=");
-
-    uid = FirebaseAuth.instance.currentUser!.uid;
-    userEmail = FirebaseAuth.instance.currentUser!.email!;
     getMyData();
   }
 
@@ -84,11 +82,14 @@ class _HomeScreenState extends State<HomeScreen> {
               automaticallyImplyLeading: false,
               leading: IconButton(
                 onPressed: () {},
-                icon: const Icon(Icons.settings),
+                icon: const Icon(
+                  Icons.arrow_back_ios_new_sharp,
+                  color: Colors.white,
+                ),
               ),
               title: const Center(
                   child: Text(
-                'SheSecure',
+                'Emergency Call',
                 style: TextStyle(
                   color: Colors.white,
                   fontWeight: FontWeight.bold,
@@ -125,56 +126,56 @@ class _HomeScreenState extends State<HomeScreen> {
               ],
             ),
           ),
-          Card(
-            child: Column(
-              children: [
-                Padding(
-                  padding: EdgeInsets.fromLTRB(20, 10, 10, 0),
-                  child: Align(
-                    alignment: Alignment.centerLeft,
-                    child: const Text(
-                      'Need Help?',
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontFamily: 'Montserrat',
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                ),
-                SizedBox(
-                  height: 5,
-                ),
-                Padding(
-                  padding: EdgeInsets.fromLTRB(20, 0, 10, 10),
-                  child: Align(
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      'We are here to assist you',
-                      style: TextStyle(
-                          color: Color(0XFFFF7373),
-                          fontSize: 16,
-                          fontFamily: 'Montserrat',
-                          fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                ),
-              ],
+          Padding(
+            padding: EdgeInsets.only(left: 20, top: 20),
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                'Contacts',
+                style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 20,
+                    fontFamily: "Montserrat"),
+              ),
             ),
           ),
-          // Expanded(
-          //   child: GoogleMap(
-          //     initialCameraPosition: CameraPosition(
-          //       target: const LatLng(37.42796133580664, -122.085749655962),
-          //       zoom: 14,
-          //     ),
-          //     mapType: MapType.normal,
-          //     myLocationEnabled: true,
-          //     onMapCreated: (GoogleMapController controller) {
-          //       _controller.complete(controller);
-          //     },
-          //   ),
-          // ),
+          Expanded(
+            child: ListView.builder(
+              itemCount: 4,
+              itemBuilder: (context, index) {
+                String emergencyName = '';
+                String emergencyContact = '';
+                switch (index) {
+                  case 0:
+                    emergencyName = emergencyName1;
+                    emergencyContact = emergencyContact1;
+                    break;
+                  case 1:
+                    emergencyName = emergencyName2;
+                    emergencyContact = emergencyContact2;
+                    break;
+                  case 2:
+                    emergencyName = emergencyName3;
+                    emergencyContact = emergencyContact3;
+                    break;
+                  case 3:
+                    emergencyName = emergencyName4;
+                    emergencyContact = emergencyContact4;
+                    break;
+                }
+                return ListTile(
+                  title: Text(
+                    emergencyName,
+                    style: TextStyle(
+                        fontFamily: "Montserrat",
+                        fontSize: 30,
+                        fontWeight: FontWeight.bold),
+                  ),
+                  subtitle: Text(emergencyContact),
+                );
+              },
+            ),
+          )
         ],
       ),
     );

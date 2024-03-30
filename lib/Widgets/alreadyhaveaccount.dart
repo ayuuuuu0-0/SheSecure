@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 class AlreadyHaveAnAccount extends StatelessWidget {
-
   final bool login;
   final VoidCallback press;
 
@@ -16,8 +15,10 @@ class AlreadyHaveAnAccount extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Text(
-          login ? 'Do not have an Account?' : 'Already have na Account',
-          style: TextStyle(color:  Colors.black87, fontStyle: FontStyle.italic,
+          login ? 'Do not have an Account?' : 'Already have an Account',
+          style: TextStyle(
+            color: Colors.black87,
+            fontStyle: FontStyle.italic,
           ),
         ),
         GestureDetector(

@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:she_secure/HomeScreen/homeScreen.dart';
 import 'package:she_secure/LoginScreen/login_screen.dart';
+import 'package:she_secure/SignupScreen/signup_screen.dart';
 import 'package:she_secure/WelcomeScreen/welcomeScreen.dart';
 import 'package:she_secure/mainTabView.dart';
 

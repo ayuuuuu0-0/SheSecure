@@ -31,6 +31,8 @@ dependencies:
   map_launcher: ^2.5.0+1
   uuid: ^3.0.7
   provider: ^6.0.5
+  google_maps_flutter: ^2.5.3
+  mapmyindia_gl: ^0.3.2
 
 dev_dependencies:
   flutter_test:
@@ -47,13 +49,17 @@ flutter:
     - assets/images/home_fill.png
     - assets/images/phone.png
     - assets/images/phone_fill.png
+    - assets/images/login.png
+    - assets/images/main_top.png
+    - assets/images/main_bottom.png
+    - assets/images/facebook.png
+    - assets/images/google.png
 
-  # fonts:
-  #   - family: Schyler
-  #     fonts:
-  #       - asset: fonts/Schyler-Regular.ttf
-  #       - asset: fonts/Schyler-Italic.ttf
-  #         style: italic
+  fonts:
+    - family: Montserrat
+      fonts:
+        - asset: assets/fonts/Montserrat-VariableFont_wght.ttf
+
   #   - family: Trajan Pro
   #     fonts:
   #       - asset: fonts/TrajanPro.ttf

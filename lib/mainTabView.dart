@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:she_secure/Buttons/PhoneScreen/phoneScreen.dart';
+import 'package:she_secure/PhoneScreen/phoneScreen.dart';
 import 'package:she_secure/Buttons/tabBar.dart';
 import 'package:she_secure/CamScreen/cameraScreen.dart';
 import 'package:she_secure/HomeScreen/homeScreen.dart';
@@ -22,8 +22,8 @@ class _MainTabViewState extends State<MainTabView> {
         body: PageStorage(bucket: pageBucket, child: currentTab),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
         floatingActionButton: SizedBox(
-          width: 60,
-          height: 60,
+          width: 70,
+          height: 70,
           child: InkWell(
             onTap: () {
               Navigator.push(context,
@@ -33,7 +33,7 @@ class _MainTabViewState extends State<MainTabView> {
               width: 60,
               height: 60,
               decoration: BoxDecoration(
-                  color: Colors.black,
+                  color: Color.fromARGB(255, 243, 228, 242),
                   borderRadius: BorderRadius.circular(35),
                   boxShadow: const [
                     BoxShadow(
@@ -43,15 +43,15 @@ class _MainTabViewState extends State<MainTabView> {
                   ]),
               child: Icon(
                 Icons.camera_alt,
-                color: Colors.white,
+                color: Colors.black54,
                 size: 35,
               ),
             ),
           ),
         ),
         bottomNavigationBar: BottomAppBar(
+          clipBehavior: Clip.antiAlias,
           shape: CircularNotchedRectangle(),
-          notchMargin: 12,
           //  child:
           //   Container(
           // decoration: BoxDecoration(color: Colors.white, boxShadow: const [

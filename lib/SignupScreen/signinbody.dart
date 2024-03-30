@@ -3,9 +3,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:she_secure/HomeScreen/homeScreen.dart';
+import 'package:she_secure/SignupScreen/signup_screen.dart';
 import 'package:she_secure/SignupScreen/signupbackground.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:she_secure/mainTabView.dart';
 import '../LoginScreen/login_screen.dart';
 import '../Widgets/ErrorAlertDialog.dart';
 import '../Widgets/alreadyhaveaccount.dart';
@@ -34,6 +36,18 @@ class _SignUpBodyState extends State<SignUpBody> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
+  final TextEditingController _emergency1Controller = TextEditingController();
+  final TextEditingController _emergency2Controller = TextEditingController();
+  final TextEditingController _emergency3Controller = TextEditingController();
+  final TextEditingController _emergency4Controller = TextEditingController();
+  final TextEditingController _emergencyName1Controller =
+      TextEditingController();
+  final TextEditingController _emergencyName2Controller =
+      TextEditingController();
+  final TextEditingController _emergencyName3Controller =
+      TextEditingController();
+  final TextEditingController _emergencyName4Controller =
+      TextEditingController();
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
@@ -161,13 +175,21 @@ class _SignUpBodyState extends State<SignUpBody> {
           'userName': _nameController.text.trim(),
           'id': uid,
           'userNumber': _phoneController.text.trim(),
+          'emergencyName1': _emergencyName1Controller.text.trim(),
+          'emergencyContact1': _emergency1Controller.text.trim(),
+          'emergencyName2': _emergencyName2Controller.text.trim(),
+          'emergencyContact2': _emergency2Controller.text.trim(),
+          'emergencyName3': _emergencyName3Controller.text.trim(),
+          'emergencyContact3': _emergency3Controller.text.trim(),
+          'emergencyName4': _emergencyName4Controller.text.trim(),
+          'emergencyContact4': _emergency4Controller.text.trim(),
           'userEmail': _emailController.text,
           'userImage': userPhotoUrl,
           'time': DateTime.now(),
           'status': 'approved',
         });
         Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => HomeScreen()));
+            context, MaterialPageRoute(builder: (context) => MainTabView()));
       } catch (error) {
         setState(() {
           _isLoading = false;
@@ -243,6 +265,62 @@ class _SignUpBodyState extends State<SignUpBody> {
                 _phoneController.text = value;
               },
             ),
+            RoundedInputField(
+              hintText: 'Emergency Contact Name',
+              icon: Icons.call,
+              onChanged: (value) {
+                _emergencyName1Controller.text = value;
+              },
+            ),
+            RoundedInputField(
+              hintText: 'Emergency Contact No 1',
+              icon: Icons.call,
+              onChanged: (value) {
+                _emergency1Controller.text = value;
+              },
+            ),
+            RoundedInputField(
+              hintText: 'Emergency Contact Name',
+              icon: Icons.call,
+              onChanged: (value) {
+                _emergencyName2Controller.text = value;
+              },
+            ),
+            RoundedInputField(
+              hintText: 'Emergency Contact No 2',
+              icon: Icons.call,
+              onChanged: (value) {
+                _emergency2Controller.text = value;
+              },
+            ),
+            RoundedInputField(
+              hintText: 'Emergency Contact Name',
+              icon: Icons.call,
+              onChanged: (value) {
+                _emergencyName3Controller.text = value;
+              },
+            ),
+            RoundedInputField(
+              hintText: 'Emergency Contact No 3',
+              icon: Icons.call,
+              onChanged: (value) {
+                _emergency3Controller.text = value;
+              },
+            ),
+            RoundedInputField(
+              hintText: 'Emergency Contact Name',
+              icon: Icons.call,
+              onChanged: (value) {
+                _emergencyName4Controller.text = value;
+              },
+            ),
+            RoundedInputField(
+              hintText: 'Emergency Contact No 4',
+              icon: Icons.call,
+              onChanged: (value) {
+                _emergency4Controller.text = value;
+              },
+            ),
             RoundedPasswordField(
               onChanged: (value) {
                 _passwordController.text = value;
@@ -309,56 +387,56 @@ class _SignUpBodyState extends State<SignUpBody> {
             SizedBox(
               height: screenWidth * 0.04,
             ),
-            // Row(
-            //   mainAxisAlignment: MainAxisAlignment.center,
-            //   children: [
-            //     GestureDetector(
-            //       onTap: () {},
-            //       child: Container(
-            //         width: 50,
-            //         height: 50,
-            //         alignment: Alignment.center,
-            //         decoration: BoxDecoration(
-            //           color: Colors.white,
-            //           border: Border.all(
-            //             width: 1,
-            //             color: Color(0xff786F72).withOpacity(0.4),
-            //           ),
-            //           borderRadius: BorderRadius.circular(15),
-            //         ),
-            //         child: Image.asset(
-            //           "assets/images/google.png",
-            //           width: 20,
-            //           height: 20,
-            //         ),
-            //       ),
-            //     ),
-            //     SizedBox(
-            //       width: screenWidth * 0.04,
-            //     ),
-            //     GestureDetector(
-            //       onTap: () {},
-            //       child: Container(
-            //         width: 50,
-            //         height: 50,
-            //         alignment: Alignment.center,
-            //         decoration: BoxDecoration(
-            //           color: Colors.white,
-            //           border: Border.all(
-            //             width: 1,
-            //             color: Color(0xff786F72).withOpacity(0.4),
-            //           ),
-            //           borderRadius: BorderRadius.circular(15),
-            //         ),
-            //         child: Image.asset(
-            //           "assets/images/facebook.png",
-            //           width: 20,
-            //           height: 20,
-            //         ),
-            //       ),
-            //     )
-            //   ],
-            // ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                GestureDetector(
+                  onTap: () {},
+                  child: Container(
+                    width: 50,
+                    height: 50,
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      border: Border.all(
+                        width: 1,
+                        color: Color(0xff786F72).withOpacity(0.4),
+                      ),
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                    child: Image.asset(
+                      "assets/images/google.png",
+                      width: 20,
+                      height: 20,
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  width: screenWidth * 0.04,
+                ),
+                GestureDetector(
+                  onTap: () {},
+                  child: Container(
+                    width: 50,
+                    height: 50,
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      border: Border.all(
+                        width: 1,
+                        color: Color(0xff786F72).withOpacity(0.4),
+                      ),
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                    child: Image.asset(
+                      "assets/images/facebook.png",
+                      width: 20,
+                      height: 20,
+                    ),
+                  ),
+                )
+              ],
+            ),
             SizedBox(
               height: screenHeight * 0.03,
             ),

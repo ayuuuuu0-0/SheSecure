@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:she_secure/HomeScreen/homeScreen.dart';
 import 'package:she_secure/LoginScreen/loginbackground.dart';
+import 'package:she_secure/mainTabView.dart';
 import '../SignupScreen/signup_screen.dart';
 import '../Widgets/ErrorAlertDialog.dart';
 import '../Widgets/alreadyhaveaccount.dart';
@@ -54,7 +55,7 @@ class _LoginBodyState extends State<LoginBody> {
       Navigator.pop(context);
       //ignore: use_build_Context_synchronously
       Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => HomeScreen()));
+          context, MaterialPageRoute(builder: (context) => MainTabView()));
     } else {
       print('error');
     }
