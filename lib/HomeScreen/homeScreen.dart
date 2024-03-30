@@ -28,6 +28,8 @@ class _HomeScreenState extends State<HomeScreen> {
     Position position = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high);
 
+    print('Position: $position');
+
     // Create a new Marker with the current location and add it to the set
     Marker marker = Marker(
       markerId: MarkerId('current_location'),
@@ -82,6 +84,67 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
+  void _setting() {
+    showModalBottomSheet(
+        context: context,
+        builder: (BuildContext context) {
+          return FractionallySizedBox(
+            heightFactor: 1.25,
+            widthFactor: 1,
+            child: Container(
+              padding: EdgeInsets.all(20),
+              child: Column(children: <Widget>[
+                CircleAvatar(
+                  radius: 50,
+                  backgroundImage: NetworkImage(userImageUrl),
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                Text('Name'),
+                SizedBox(
+                  height: 10,
+                ),
+                Text(getUserName),
+                SizedBox(
+                  height: 10,
+                ),
+                Text('Email'),
+                SizedBox(
+                  height: 10,
+                ),
+                Text(userEmail),
+                SizedBox(
+                  height: 10,
+                ),
+                Text('Password'),
+                SizedBox(
+                  height: 10,
+                ),
+                Text('********'),
+                SizedBox(
+                  height: 10,
+                ),
+                ElevatedButton(
+                  onPressed: () {},
+                  child: Text('Button 1'),
+                ),
+                SizedBox(height: 10),
+                ElevatedButton(
+                  onPressed: () {},
+                  child: Text('Button 2'),
+                ),
+                SizedBox(height: 10),
+                ElevatedButton(
+                  onPressed: () {},
+                  child: Text('Button 3'),
+                ),
+              ]),
+            ),
+          );
+        });
+  }
+
   @override
   void initState() {
     // TODO: implement initState
@@ -111,7 +174,9 @@ class _HomeScreenState extends State<HomeScreen> {
               elevation: 0,
               automaticallyImplyLeading: false,
               leading: IconButton(
-                onPressed: () {},
+                onPressed: () {
+                  _setting();
+                },
                 icon: const Icon(Icons.settings),
               ),
               title: const Center(
