@@ -3,9 +3,8 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
+
 import 'package:she_secure/Widgets/global_var.dart';
-import 'package:mapmyindia_gl/mapmyindia_gl.dart';
 
 class PhoneScreen extends StatefulWidget {
   const PhoneScreen({super.key});
@@ -93,6 +92,7 @@ class _PhoneScreenState extends State<PhoneScreen> {
                 style: TextStyle(
                   color: Colors.white,
                   fontWeight: FontWeight.bold,
+                  fontFamily: 'Montserrat',
                   shadows: [
                     Shadow(
                       // bottomLeft
@@ -127,7 +127,10 @@ class _PhoneScreenState extends State<PhoneScreen> {
             ),
           ),
           Padding(
-            padding: EdgeInsets.only(left: 20, top: 20),
+            padding: EdgeInsets.only(
+              left: 20,
+              top: 20,
+            ),
             child: Align(
               alignment: Alignment.centerLeft,
               child: Text(
@@ -136,6 +139,27 @@ class _PhoneScreenState extends State<PhoneScreen> {
                     fontWeight: FontWeight.bold,
                     fontSize: 20,
                     fontFamily: "Montserrat"),
+              ),
+            ),
+          ),
+          Card(
+            margin: EdgeInsets.all(8.0),
+            child: ListTile(
+              title: Text(
+                'Add New Contact',
+                style: TextStyle(
+                  fontFamily: "Montserrat",
+                  fontSize: 25,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              subtitle: Text('Edit emergency contact'),
+              trailing: FloatingActionButton(
+                onPressed: () {
+                  // Add your onPressed code here
+                },
+                child: Icon(Icons.add, color: Colors.white),
+                backgroundColor: Color(0xFFFF7373),
               ),
             ),
           ),
@@ -163,15 +187,22 @@ class _PhoneScreenState extends State<PhoneScreen> {
                     emergencyContact = emergencyContact4;
                     break;
                 }
-                return ListTile(
-                  title: Text(
-                    emergencyName,
-                    style: TextStyle(
-                        fontFamily: "Montserrat",
-                        fontSize: 30,
-                        fontWeight: FontWeight.bold),
+                return Card(
+                  margin: EdgeInsets.fromLTRB(10, 0, 10, 10),
+                  child: ListTile(
+                    title: Text(
+                      emergencyName,
+                      style: TextStyle(
+                          fontFamily: "Montserrat",
+                          fontSize: 30,
+                          fontWeight: FontWeight.bold),
+                    ),
+                    subtitle: Text(emergencyContact),
+                    trailing: CircleAvatar(
+                      backgroundColor: Colors.green,
+                      child: Icon(Icons.phone, color: Colors.white),
+                    ),
                   ),
-                  subtitle: Text(emergencyContact),
                 );
               },
             ),

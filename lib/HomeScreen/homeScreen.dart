@@ -1,11 +1,10 @@
 import 'dart:async';
-
+import 'package:geolocator/geolocator.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:she_secure/Widgets/global_var.dart';
-import 'package:mapmyindia_gl/mapmyindia_gl.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -18,6 +17,42 @@ class _HomeScreenState extends State<HomeScreen> {
   Completer<GoogleMapController> _controller = Completer();
 
   FirebaseAuth _auth = FirebaseAuth.instance;
+
+  Set<Marker> _markers = {};
+
+  // ...
+
+  // This function is called when the Google Map is created
+  void _onMapCreated(GoogleMapController controller) async {
+    // Get the current location
+    Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high);
+
+    // Create a new Marker with the current location and add it to the set
+    Marker marker = Marker(
+      markerId: MarkerId('current_location'),
+      position: LatLng(position.latitude, position.longitude),
+      infoWindow: InfoWindow(title: 'Current Location'),
+    );
+    _markers.add(marker);
+
+    // Print the marker coordinates
+    print(
+        'Marker coordinates: ${marker.position.latitude}, ${marker.position.longitude}');
+
+    // Update the state of the markers
+    setState(() {});
+
+    // Move the camera to the current location
+    controller.animateCamera(
+      CameraUpdate.newCameraPosition(
+        CameraPosition(
+          target: LatLng(position.latitude, position.longitude),
+          zoom: 14,
+        ),
+      ),
+    );
+  }
 
   _buildUserImage() {
     return Container(
@@ -52,13 +87,6 @@ class _HomeScreenState extends State<HomeScreen> {
     // TODO: implement initState
     super.initState();
 
-    // MapmyIndiaAccountManager.setMapSDKKey(ACCESS_TOKEN);
-    MapmyIndiaAccountManager.setRestAPIKey("52a026e0c0b82834480722ac29ae618a");
-    MapmyIndiaAccountManager.setAtlasClientId(
-        "96dHZVzsAutDLGyvMzPjsL4E33c6DiGXvGkkCjbuXfryx2bNiXqriKRGD-8pZiQWtwgLYI_i-s0_jHCB-43CIUB9d1MUOcow");
-    MapmyIndiaAccountManager.setAtlasClientSecret(
-        "lrFxI-iSEg-sVir2rf0wD3mwCRrpb2JxFsP60eTPJfe5XSSRJVId9Y6FV-Kg1e4yP5l2HWDjd36pOiQ-uJc2zI5krkvPt8fe-F-evuBnP-Q=");
-
     uid = FirebaseAuth.instance.currentUser!.uid;
     userEmail = FirebaseAuth.instance.currentUser!.email!;
     getMyData();
@@ -92,6 +120,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 style: TextStyle(
                   color: Colors.white,
                   fontWeight: FontWeight.bold,
+                  fontFamily: 'Montserrat',
+                  fontSize: 25,
                   shadows: [
                     Shadow(
                       // bottomLeft
@@ -125,14 +155,14 @@ class _HomeScreenState extends State<HomeScreen> {
               ],
             ),
           ),
-          Card(
+          const Card(
             child: Column(
               children: [
                 Padding(
                   padding: EdgeInsets.fromLTRB(20, 10, 10, 0),
                   child: Align(
                     alignment: Alignment.centerLeft,
-                    child: const Text(
+                    child: Text(
                       'Need Help?',
                       style: TextStyle(
                         fontSize: 20,
@@ -162,19 +192,65 @@ class _HomeScreenState extends State<HomeScreen> {
               ],
             ),
           ),
-          // Expanded(
-          //   child: GoogleMap(
-          //     initialCameraPosition: CameraPosition(
-          //       target: const LatLng(37.42796133580664, -122.085749655962),
-          //       zoom: 14,
-          //     ),
-          //     mapType: MapType.normal,
-          //     myLocationEnabled: true,
-          //     onMapCreated: (GoogleMapController controller) {
-          //       _controller.complete(controller);
-          //     },
-          //   ),
-          // ),
+          Expanded(
+            child: Stack(
+              children: [
+                GoogleMap(
+                  initialCameraPosition: const CameraPosition(
+                    target: LatLng(37.42796133580664, -122.085749655962),
+                    zoom: 14,
+                  ),
+                  mapType: MapType.normal,
+                  markers: _markers,
+                  compassEnabled: true,
+                  myLocationEnabled: true,
+                  onMapCreated: _onMapCreated,
+                ),
+                //),
+
+                Center(
+                  child: Container(
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      boxShadow: [
+                        BoxShadow(
+                            color:
+                                Colors.red.withOpacity(0.3), // Light red color
+                            spreadRadius: 40, // Spread radius
+                            blurRadius: 80,
+                            blurStyle: BlurStyle.solid // Blur radius
+                            ),
+                        BoxShadow(
+                          color:
+                              Colors.red.withOpacity(0.3), // Transparent color
+                          spreadRadius: 40,
+                          blurRadius: 80, // Some blur
+                        ),
+                      ],
+                    ),
+                    child: TextButton(
+                      style: TextButton.styleFrom(
+                        primary: Colors.white,
+                        backgroundColor: Color.fromARGB(255, 238, 97, 97),
+                        padding: EdgeInsets.all(30),
+                        shape: CircleBorder(),
+                      ),
+                      onPressed: () {
+                        // Handle button press
+                      },
+                      child: Text(
+                        'SOS',
+                        style: TextStyle(
+                            fontSize: 40,
+                            // fontFamily: 'Montserrat',
+                            fontWeight: FontWeight.bold),
+                      ),
+                    ), //
+                  ),
+                ),
+              ],
+            ),
+          ),
         ],
       ),
     );

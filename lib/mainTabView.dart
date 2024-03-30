@@ -50,6 +50,7 @@ class _MainTabViewState extends State<MainTabView> {
           ),
         ),
         bottomNavigationBar: BottomAppBar(
+          elevation: 10,
           clipBehavior: Clip.antiAlias,
           shape: CircularNotchedRectangle(),
           //  child:
