@@ -12,6 +12,7 @@ import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:she_secure/Widgets/global_var.dart';
 import 'package:she_secure/mainTabView.dart';
+import 'package:flutter/cupertino.dart';
 
 class CameraScreen extends StatefulWidget {
   const CameraScreen({Key? key}) : super(key: key);
@@ -23,6 +24,7 @@ class CameraScreen extends StatefulWidget {
 class _CameraScreenState extends State<CameraScreen> {
   String userEmergencyPhotoUrl = '';
   File? _image;
+  String? _selectedSeverity;
 
   FirebaseAuth _auth = FirebaseAuth.instance;
 
@@ -160,7 +162,7 @@ class _CameraScreenState extends State<CameraScreen> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          insetPadding: EdgeInsets.fromLTRB(40, 80, 40, 80),
+          insetPadding: EdgeInsets.fromLTRB(40, 60, 40, 60),
           content: Center(
             child: SizedBox(
               width: MediaQuery.of(context).size.width * 1,
@@ -328,6 +330,32 @@ class _CameraScreenState extends State<CameraScreen> {
                   const SizedBox(
                     height: 10,
                   ),
+                  const Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        ' Severity Level',
+                        style: TextStyle(
+                            fontSize: 20,
+                            fontFamily: 'Montserrat',
+                            fontWeight: FontWeight.bold),
+                      )),
+                  const SizedBox(height: 10),
+                  CupertinoPicker(
+                    onSelectedItemChanged: (int index) {
+                      setState(() {
+                        _selectedSeverity = ['Low', 'Medium', 'High'][index];
+                      });
+                    },
+                    itemExtent: 32.0,
+                    children: const <Widget>[
+                      Text('Low'),
+                      Text('Medium'),
+                      Text('High'),
+                    ],
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       primary: Color(0xFFFF7373),
@@ -355,11 +383,6 @@ class _CameraScreenState extends State<CameraScreen> {
                       ),
                     ),
                     onPressed: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => MainTabView()));
-
                       Navigator.pop(context);
                     },
                     child: const Text('Ignore',

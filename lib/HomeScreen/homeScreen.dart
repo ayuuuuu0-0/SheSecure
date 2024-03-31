@@ -8,6 +8,8 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:she_secure/LoginScreen/login_screen.dart';
 import 'package:she_secure/Widgets/global_var.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:shake/shake.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -17,11 +19,16 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  late CameraPosition _kGooglePlex;
   Completer<GoogleMapController> _controller = Completer();
 
   FirebaseAuth _auth = FirebaseAuth.instance;
 
   Set<Marker> _markers = {};
+
+  String? _selectedSeverity;
+
+  ShakeDetector? detector;
 
   // ...
 
@@ -49,6 +56,7 @@ class _HomeScreenState extends State<HomeScreen> {
     setState(() {});
 
     // Move the camera to the current location
+
     controller.animateCamera(
       CameraUpdate.newCameraPosition(
         CameraPosition(
@@ -57,6 +65,31 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       ),
     );
+  }
+
+  Future<void> _setInitialLocation() async {
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      return Future.error('Location services are disabled.');
+    }
+
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        return Future.error('Location permissions are denied');
+      }
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+      return Future.error(
+          'Location permissions are permanently denied, we cannot request permissions.');
+    }
+
+    Position position = await Geolocator.getCurrentPosition();
   }
 
   _buildUserImage() {
@@ -254,7 +287,7 @@ class _HomeScreenState extends State<HomeScreen> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          insetPadding: EdgeInsets.fromLTRB(40, 80, 40, 80),
+          insetPadding: EdgeInsets.fromLTRB(40, 60, 40, 60),
           content: Center(
             child: SizedBox(
               width: MediaQuery.of(context).size.width * 1,
@@ -422,6 +455,32 @@ class _HomeScreenState extends State<HomeScreen> {
                   const SizedBox(
                     height: 10,
                   ),
+                  const Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        ' Severity Level',
+                        style: TextStyle(
+                            fontSize: 20,
+                            fontFamily: 'Montserrat',
+                            fontWeight: FontWeight.bold),
+                      )),
+                  const SizedBox(height: 10),
+                  CupertinoPicker(
+                    onSelectedItemChanged: (int index) {
+                      setState(() {
+                        _selectedSeverity = ['Low', 'Medium', 'High'][index];
+                      });
+                    },
+                    itemExtent: 32.0,
+                    children: const <Widget>[
+                      Text('Low'),
+                      Text('Medium'),
+                      Text('High'),
+                    ],
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       primary: Color(0xFFFF7373),
@@ -477,7 +536,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     height: 30,
                   ),
                   Text(
-                    'All details sent',
+                    'Emergency Alert sent',
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
@@ -533,7 +592,17 @@ class _HomeScreenState extends State<HomeScreen> {
 
     uid = FirebaseAuth.instance.currentUser!.uid;
     userEmail = FirebaseAuth.instance.currentUser!.email!;
+    _setInitialLocation();
     getMyData();
+    detector = ShakeDetector.autoStart(onPhoneShake: () {
+      _sos();
+    });
+  }
+
+  @override
+  void dispose() {
+    detector?.stopListening();
+    super.dispose();
   }
 
   @override
@@ -642,8 +711,8 @@ class _HomeScreenState extends State<HomeScreen> {
             child: Stack(
               children: [
                 GoogleMap(
-                  initialCameraPosition: const CameraPosition(
-                    target: LatLng(37.42796133580664, -122.085749655962),
+                  initialCameraPosition: CameraPosition(
+                    target: const LatLng(0, 0),
                     zoom: 14,
                   ),
                   mapType: MapType.normal,
