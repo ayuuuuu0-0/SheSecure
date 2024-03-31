@@ -26,14 +26,19 @@ class _MainTabViewState extends State<MainTabView> {
           height: 70,
           child: InkWell(
             onTap: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => CameraScreen()));
+              selectTab = 1; // Set a unique number for the CameraScreen
+              currentTab = CameraScreen(); // Set the currentTab to CameraScreen
+              if (mounted) {
+                setState(() {});
+              }
             },
             child: Container(
               width: 60,
               height: 60,
               decoration: BoxDecoration(
-                  color: Color.fromARGB(255, 243, 228, 242),
+                  color: currentTab is CameraScreen
+                      ? Color(0xFFFF7373)
+                      : Color.fromARGB(255, 243, 228, 242),
                   borderRadius: BorderRadius.circular(35),
                   boxShadow: const [
                     BoxShadow(
@@ -43,7 +48,8 @@ class _MainTabViewState extends State<MainTabView> {
                   ]),
               child: Icon(
                 Icons.camera_alt,
-                color: Colors.black54,
+                color:
+                    currentTab is CameraScreen ? Colors.white : Colors.black54,
                 size: 35,
               ),
             ),
@@ -90,9 +96,9 @@ class _MainTabViewState extends State<MainTabView> {
               TabButton(
                   icon: "assets/images/phone.png",
                   selectIcon: "assets/images/phone_fill.png",
-                  isActive: selectTab == 1,
+                  isActive: selectTab == 2,
                   onTap: () {
-                    selectTab = 1;
+                    selectTab = 2;
                     currentTab = const PhoneScreen();
                     if (mounted) {
                       setState(() {});

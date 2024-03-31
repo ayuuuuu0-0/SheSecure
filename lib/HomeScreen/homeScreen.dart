@@ -1,9 +1,12 @@
 import 'dart:async';
+import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:intl/intl.dart';
+import 'package:she_secure/LoginScreen/login_screen.dart';
 import 'package:she_secure/Widgets/global_var.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -84,7 +87,7 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
-  void _setting() {
+  _setting() {
     showModalBottomSheet(
         context: context,
         builder: (BuildContext context) {
@@ -95,54 +98,432 @@ class _HomeScreenState extends State<HomeScreen> {
               padding: EdgeInsets.all(20),
               child: Column(children: <Widget>[
                 CircleAvatar(
-                  radius: 50,
-                  backgroundImage: NetworkImage(userImageUrl),
+                  radius: 55,
+                  backgroundColor: Colors.blueGrey,
+                  child: CircleAvatar(
+                    radius: 50,
+                    backgroundImage: NetworkImage(userImageUrl),
+                  ),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 10,
                 ),
-                Text('Name'),
-                SizedBox(
+                const Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      '   Name',
+                      style: TextStyle(
+                          fontSize: 15,
+                          fontFamily: 'Montserrat',
+                          fontWeight: FontWeight.bold),
+                    )),
+                const SizedBox(
                   height: 10,
                 ),
-                Text(getUserName),
-                SizedBox(
+                Container(
+                    padding: EdgeInsets.all(10),
+                    alignment: Alignment.centerLeft,
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.black, width: 1),
+                      borderRadius: BorderRadius.circular(50),
+                    ),
+                    child: Padding(
+                      padding: EdgeInsets.fromLTRB(10, 0, 0, 0),
+                      child: Text(
+                        getUserName,
+                        style: const TextStyle(
+                            fontSize: 15,
+                            fontFamily: 'Montserrat',
+                            fontWeight: FontWeight.bold),
+                      ),
+                    )),
+                const SizedBox(
                   height: 10,
                 ),
-                Text('Email'),
-                SizedBox(
+                const Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      '   Email',
+                      style: TextStyle(
+                          fontSize: 15,
+                          fontFamily: 'Montserrat',
+                          fontWeight: FontWeight.bold),
+                    )),
+                const SizedBox(
                   height: 10,
                 ),
-                Text(userEmail),
-                SizedBox(
+                Container(
+                    padding: const EdgeInsets.all(10),
+                    alignment: Alignment.centerLeft,
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.black, width: 1),
+                      borderRadius: BorderRadius.circular(50),
+                    ),
+                    child: Padding(
+                      padding: EdgeInsets.fromLTRB(10, 0, 0, 0),
+                      child: Text(
+                        userEmail,
+                        style: const TextStyle(
+                            fontSize: 15,
+                            fontFamily: 'Montserrat',
+                            fontWeight: FontWeight.bold),
+                      ),
+                    )),
+                const SizedBox(
                   height: 10,
                 ),
-                Text('Password'),
-                SizedBox(
+                const Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      '   Password',
+                      style: TextStyle(
+                          fontSize: 15,
+                          fontFamily: 'Montserrat',
+                          fontWeight: FontWeight.bold),
+                    )),
+                const SizedBox(
                   height: 10,
                 ),
-                Text('********'),
-                SizedBox(
+                Container(
+                  padding: const EdgeInsets.all(10),
+                  alignment: Alignment.centerLeft,
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.black, width: 1),
+                    borderRadius: BorderRadius.circular(50),
+                  ),
+                  child: const Padding(
+                    padding: EdgeInsets.fromLTRB(10, 0, 0, 0),
+                    child: Text(
+                      '*********',
+                      style: TextStyle(
+                          fontSize: 15,
+                          fontFamily: 'Montserrat',
+                          fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                ),
+                const SizedBox(
                   height: 10,
                 ),
                 ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    primary: const Color.fromARGB(255, 159, 151, 151),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                  ),
                   onPressed: () {},
-                  child: Text('Button 1'),
+                  child: const Text(
+                    'Update Credentials',
+                    style: TextStyle(color: Colors.white),
+                  ),
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 ElevatedButton(
-                  onPressed: () {},
-                  child: Text('Button 2'),
-                ),
-                SizedBox(height: 10),
-                ElevatedButton(
-                  onPressed: () {},
-                  child: Text('Button 3'),
+                  style: ElevatedButton.styleFrom(
+                    primary: Colors.white,
+                    side: const BorderSide(color: Color(0XFFFF7373), width: 1),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                  ),
+                  onPressed: () {
+                    Navigator.of(context).pushReplacement(MaterialPageRoute(
+                        builder: (context) => const LoginScreen()));
+                  },
+                  child: const Text('Logout',
+                      style: TextStyle(color: Color(0XFFFF7373))),
                 ),
               ]),
             ),
           );
         });
+  }
+
+  void _sos() async {
+    DateTime now = DateTime.now();
+    String formattedDate = DateFormat('dd-MM-yyyy – kk:mm').format(now);
+
+    Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high);
+    List<Placemark> placemarks =
+        await placemarkFromCoordinates(position.latitude, position.longitude);
+    Placemark place = placemarks[0];
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          insetPadding: EdgeInsets.fromLTRB(40, 80, 40, 80),
+          content: Center(
+            child: SizedBox(
+              width: MediaQuery.of(context).size.width * 1,
+              child: Column(
+                children: <Widget>[
+                  Text(
+                    'Emergency Alert!',
+                    style: TextStyle(
+                        // fontFamily: 'Montserrat',
+                        fontSize: 30,
+                        fontWeight: FontWeight.bold,
+                        color: Color(0xFFFF7373)),
+                  ),
+                  SizedBox(
+                    height: 5,
+                  ),
+                  Text(
+                    'Detail Info',
+                    style: TextStyle(
+                      fontFamily: 'Montserrat',
+                      fontSize: 15,
+                      fontWeight: FontWeight.bold,
+                      //color: Color(0xFFFF7373)
+                    ),
+                  ),
+                  Divider(
+                    color: Colors.black,
+                    thickness: 0.5,
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  const Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        ' Name',
+                        style: TextStyle(
+                            fontSize: 20,
+                            fontFamily: 'Montserrat',
+                            fontWeight: FontWeight.bold),
+                      )),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  Padding(
+                    padding: EdgeInsets.fromLTRB(12, 0, 0, 0),
+                    child: Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          getUserName,
+                          style: TextStyle(
+                              fontSize: 15,
+                              fontFamily: 'Montserrat',
+                              fontWeight: FontWeight.w900),
+                        )),
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  const Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        ' Date & Time',
+                        style: TextStyle(
+                            fontSize: 20,
+                            fontFamily: 'Montserrat',
+                            fontWeight: FontWeight.bold),
+                      )),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  Padding(
+                    padding: EdgeInsets.fromLTRB(12, 0, 0, 0),
+                    child: Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          formattedDate,
+                          style: TextStyle(
+                              fontSize: 15,
+                              fontFamily: 'Montserrat',
+                              fontWeight: FontWeight.w900),
+                        )),
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  const Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        ' City',
+                        style: TextStyle(
+                            fontSize: 20,
+                            fontFamily: 'Montserrat',
+                            fontWeight: FontWeight.bold),
+                      )),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  Padding(
+                    padding: EdgeInsets.fromLTRB(12, 0, 0, 0),
+                    child: Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          '${place.locality}',
+                          style: TextStyle(
+                              fontSize: 15,
+                              fontFamily: 'Montserrat',
+                              fontWeight: FontWeight.w900),
+                        )),
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  const Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        ' State',
+                        style: TextStyle(
+                            fontSize: 20,
+                            fontFamily: 'Montserrat',
+                            fontWeight: FontWeight.bold),
+                      )),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  Padding(
+                    padding: EdgeInsets.fromLTRB(12, 0, 0, 0),
+                    child: Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          '${place.administrativeArea}',
+                          style: TextStyle(
+                              fontSize: 15,
+                              fontFamily: 'Montserrat',
+                              fontWeight: FontWeight.w900),
+                        )),
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  const Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        ' Pincode',
+                        style: TextStyle(
+                            fontSize: 20,
+                            fontFamily: 'Montserrat',
+                            fontWeight: FontWeight.bold),
+                      )),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  Padding(
+                    padding: EdgeInsets.fromLTRB(12, 0, 0, 0),
+                    child: Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          '${place.postalCode}',
+                          style: TextStyle(
+                              fontSize: 15,
+                              fontFamily: 'Montserrat',
+                              fontWeight: FontWeight.w900),
+                        )),
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      primary: Color(0xFFFF7373),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                    onPressed: () {
+                      Navigator.pop(context);
+                      _confirmation();
+                    },
+                    child: const Text(
+                      'Send Alert ',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ),
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      primary: Colors.white,
+                      side:
+                          const BorderSide(color: Color(0XFFFF7373), width: 1),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: const Text('Ignore',
+                        style: TextStyle(color: Color(0XFFFF7373))),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  void _confirmation() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          insetPadding: EdgeInsets.fromLTRB(40, 230, 40, 230),
+          content: Center(
+            child: SizedBox(
+              width: MediaQuery.of(context).size.width * 1,
+              child: Column(
+                children: <Widget>[
+                  SizedBox(
+                    height: 30,
+                  ),
+                  Text(
+                    'All details sent',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  CircleAvatar(
+                    radius: 70,
+                    backgroundColor: Colors.green.shade300,
+                    child: CircleAvatar(
+                      radius: 65,
+                      backgroundColor: Colors.green,
+                      child: Icon(
+                        Icons.check,
+                        size: 60,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      primary: Colors.white,
+                      side:
+                          const BorderSide(color: Color(0XFFFF7373), width: 1),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: const Text('OK',
+                        style: TextStyle(color: Color(0XFFFF7373))),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
   }
 
   @override
@@ -295,15 +676,15 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                     child: TextButton(
                       style: TextButton.styleFrom(
-                        primary: Colors.white,
-                        backgroundColor: Color.fromARGB(255, 238, 97, 97),
-                        padding: EdgeInsets.all(30),
-                        shape: CircleBorder(),
+                        foregroundColor: Colors.white,
+                        backgroundColor: const Color.fromARGB(255, 238, 97, 97),
+                        padding: const EdgeInsets.all(30),
+                        shape: const CircleBorder(),
                       ),
                       onPressed: () {
-                        // Handle button press
+                        _sos();
                       },
-                      child: Text(
+                      child: const Text(
                         'SOS',
                         style: TextStyle(
                             fontSize: 40,
