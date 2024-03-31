@@ -33,6 +33,7 @@ dependencies:
   provider: ^6.0.5
   google_maps_flutter: ^2.5.3
   shake: ^2.2.0
+  flutter_launcher_icons: ^0.13.1
 
 dev_dependencies:
   flutter_test:

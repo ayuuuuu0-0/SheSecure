@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -26,7 +27,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Set<Marker> _markers = {};
 
-  String? _selectedSeverity;
+  String _selectedSeverity = 'Low';
 
   ShakeDetector? detector;
 
@@ -116,6 +117,18 @@ class _HomeScreenState extends State<HomeScreen> {
       setState(() {
         userImageUrl = results.data()!['userImage'];
         getUserName = results.data()!['userName'];
+      });
+    });
+  }
+
+  getEmergencyImage() {
+    FirebaseFirestore.instance
+        .collection('EmergencyImage')
+        .doc(uid)
+        .get()
+        .then((results) {
+      setState(() {
+        userEmergencyImage = results.data()!['userEmergencyImage'];
       });
     });
   }
@@ -282,6 +295,8 @@ class _HomeScreenState extends State<HomeScreen> {
     List<Placemark> placemarks =
         await placemarkFromCoordinates(position.latitude, position.longitude);
     Placemark place = placemarks[0];
+
+    // Now you can send jsonData in your HTTP request
 
     showDialog(
       context: context,
@@ -519,6 +534,21 @@ class _HomeScreenState extends State<HomeScreen> {
         );
       },
     );
+    Map<String, dynamic> data = {
+      'date': formattedDate,
+      'lat': position.latitude,
+      'lng': position.longitude,
+      'state': place.administrativeArea,
+      'city': place.locality,
+      'pincode': place.postalCode,
+      'severity': _selectedSeverity,
+      'emergencyImage':
+          userEmergencyImage, // replace with your actual image data
+    };
+
+    // Convert the data to a JSON string
+    String jsonData = jsonEncode(data);
+    print(jsonData);
   }
 
   void _confirmation() {
@@ -594,6 +624,7 @@ class _HomeScreenState extends State<HomeScreen> {
     userEmail = FirebaseAuth.instance.currentUser!.email!;
     _setInitialLocation();
     getMyData();
+    getEmergencyImage();
     detector = ShakeDetector.autoStart(onPhoneShake: () {
       _sos();
     });

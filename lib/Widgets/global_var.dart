@@ -10,3 +10,4 @@ String emergencyName1 = '';
 String emergencyName2 = '';
 String emergencyName3 = '';
 String emergencyName4 = '';
+String userEmergencyImage = '';
